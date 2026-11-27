@@ -1,0 +1,3 @@
+# Players to unban when running /protocolz relese or /protocolz release
+unban-on-release:
+  - DEVLOPER__
