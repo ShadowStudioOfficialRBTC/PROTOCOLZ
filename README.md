@@ -1,48 +1,41 @@
-# ProtocolZ
+# ProtocolZ 1.3.0
 
 **A last-resort emergency containment plugin for Paper servers.**
 
-ProtocolZ provides commands to freeze server ticks, ban player names, remove entities, and clear selected blocks from loaded chunks. It is intentionally powerful and destructive; it is not a routine moderation or server-management plugin.
+ProtocolZ can freeze server ticks, ban player names, remove entities and selected blocks, disable command blocks, and suppress TNT explosions. It is deliberately destructive and is not intended for routine server administration.
 
-## Important warning
+## Read before installing
 
-Use ProtocolZ only when you understand and accept the consequences. Take a verified backup first and test on a disposable copy of your world.
+Back up your worlds and ban list, and test on a disposable server first. ProtocolZ does not provide an undo for removed entities or blocks.
 
-- `/protocolz cpt` attempts to freeze ticks, permanently bans every player name Bukkit reports (including offline players), kicks online players, and additionally bans the hard-coded name `DEVLOPER__`. It removes **all non-player entities** from every world and replaces selected blocks with air in **currently loaded chunks**.
-- These world and entity changes have no undo or restore command. Lost entities and block contents are not recovered by `/protocolz release`.
-- `/protocolz cptr` removes **all name bans**, including bans that existed before ProtocolZ was installed.
-- `/protocolz release` attempts to unfreeze ticks and unbans only the names in `unban-on-release`. It does not undo the containment changes or unban everyone.
+- `/protocolz cpt` activates and persists containment, attempts to freeze ticks, bans online and known offline player names, kicks online players, and additionally bans the names listed in `unban-on-release`. It removes non-player entities and selected blocks from loaded chunks.
+- CPT sets the `commandBlocksEnabled` and `tntExplodes` gamerules to `false` in every world and deletes command blocks from loaded chunks. Command blocks in chunks loaded later are also deleted. Command-block commands and TNT priming/explosions are suppressed while containment is active.
+- `/protocolz cptr` unbans **all** name bans, attempts to unfreeze ticks, and sets both gamerules to `true`. Deleted command blocks, entities, and blocks are **not restored**.
+- `/protocolz releaseud`, `/protocolz releseud`, `/protocolz release`, and `/protocolz relese` attempt to unfreeze ticks and pardon only names in `unban-on-release`. They deliberately leave containment active: command blocks and TNT remain disabled until `/protocolz cptr`.
 
-Do not run these commands to test on a live server.
+The saved containment state is reapplied at startup: the plugin resets both gamerules, removes command blocks from loaded and subsequently loaded chunks, and attempts to freeze ticks again. Do not use these commands to test on a live server.
 
 ## Requirements
 
-- Paper server matching the Paper API version declared by the project (`26.3.build.263-stable`)
+- Paper server matching the API version declared by the project (`26.3.build.263-stable`)
 - Java 25
 - Maven to build from source
 
 ## Build
 
-From the project root, run:
+From the project root:
 
 ```shell
 mvn clean package
 ```
 
-The plugin JAR will be created at:
-
-```text
-target/ProtocolZ-1.2.0.jar
-```
-
-Paper API dependencies are provided by the server and are not bundled in the plugin JAR.
+The plugin JAR is created at `target/ProtocolZ-1.3.0.jar`. Paper API dependencies are provided by the server and are not bundled in the plugin.
 
 ## Install
 
-1. Build the JAR, or obtain a trusted build of it.
-2. Copy `target/ProtocolZ-1.2.0.jar` into your server's `plugins` directory.
-3. Start or restart the server.
-4. Review `plugins/ProtocolZ/config.yml` before using any command.
+1. Copy `target/ProtocolZ-1.3.0.jar` into the server's `plugins` directory.
+2. Start or restart the server.
+3. Review `plugins/ProtocolZ/config.yml` before using any command.
 
 ## Commands
 
@@ -50,22 +43,22 @@ All commands require `protocolz.use`, which defaults to server operators.
 
 | Command | Effect |
 | --- | --- |
-| `/protocolz cpt` | Runs the destructive containment actions described above. |
-| `/protocolz cptr` | Unbans every name on the server. |
-| `/protocolz relese` or `/protocolz release` | Attempts to unfreeze ticks and unbans configured names. |
-| `/protocolz reload` | Reloads `config.yml`. |
+| `/protocolz cpt` | Activate emergency containment. |
+| `/protocolz cptr` | Unban all names, unfreeze ticks, and re-enable command blocks and TNT. |
+| `/protocolz releaseud` or `/protocolz releseud` | Unfreeze ticks and unban configured names; containment remains active. |
+| `/protocolz release` or `/protocolz relese` | Backward-compatible aliases for the temporary release. |
+| `/protocolz reload` | Reload `config.yml`; the plugin-managed containment state is unchanged. |
 
 ## Configuration
 
-`unban-on-release` controls which names `/protocolz release` pardons. The shipped default is:
-
 ```yaml
+containment-active: false
 unban-on-release:
   - DEVLOPER__
 ```
 
-Edit this list to match your recovery plan. The `DEVLOPER__` name is also hard-coded into the `cpt` action, so changing this setting does not change that additional ban.
+`containment-active` is managed by the plugin to preserve containment across restarts. Add or remove names in `unban-on-release` to control which names CPT additionally bans and which the temporary release commands pardon. CPT still bans all online and known offline names; use `/protocolz cptr` to clear every name ban.
 
 ## License
 
-This project is released under the MIT License. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

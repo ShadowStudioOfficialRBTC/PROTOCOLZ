@@ -6,7 +6,7 @@
 
     <groupId>com.shadowstudios</groupId>
     <artifactId>ProtocolZ</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <packaging>jar</packaging>
 
     <name>ProtocolZ</name>
@@ -35,7 +35,7 @@
     </dependencies>
 
     <build>
-        <finalName>ProtocolZ-1.2.0</finalName>
+        <finalName>ProtocolZ-1.3.0</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

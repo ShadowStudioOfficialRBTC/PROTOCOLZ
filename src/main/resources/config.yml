@@ -1,3 +1,6 @@
-# Players to unban when running /protocolz relese or /protocolz release
+# Managed by ProtocolZ. If containment is active, it is re-applied after a restart.
+containment-active: false
+
+# These names are additionally banned by /protocolz cpt and pardoned by release commands.
 unban-on-release:
   - DEVLOPER__
